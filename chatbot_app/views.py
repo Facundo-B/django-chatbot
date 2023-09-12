@@ -22,7 +22,6 @@ def ask_openai(message):
 
 # Create your views here.
 def chatbot(request):
-    print(request.user)
     if request.user.is_authenticated :
         user_chats = Chat.objects.filter(user=request.user)
     else:
@@ -33,8 +32,9 @@ def chatbot(request):
         test_answer = 'Hello! This is a test answer.'
         answer = test_answer
         #answer = ask_openai(message)
-        chat = Chat(user=request.user, message=message, response=answer, created_at = timezone.now())
-        chat.save()
+        if request.user.is_authenticated :
+            chat = Chat(user=request.user, message=message, response=answer, created_at = timezone.now())
+            chat.save()
         return JsonResponse({'message':message,'answer': answer })
     return render(request, 'chatbot.html', {'user_chats': user_chats})
 
